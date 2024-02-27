@@ -1,9 +1,12 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/constants/colors.dart';
-import 'package:todo_app/model/todo.dart';
-import '../../widgets/todo_item.dart';
+import 'package:todo_app/controllers/tasks_provider.dart';
+import 'package:todo_app/model/task.dart';
+import 'package:todo_app/view/screens/add%20task/components/title_section.dart';
+import 'package:todo_app/view/screens/add%20task/components/todos_section.dart';
+import 'package:todo_app/view/widgets/actions/custom_button.dart';
+import 'package:todo_app/view/widgets/misc/custom_app_bar.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -13,191 +16,92 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
-  final todolist = ToDo.todolist();
-  final _todoController = TextEditingController();
+  final _titleController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final List<TextEditingController> _todosControllers = [
+    TextEditingController()
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: tdbgColor,
-      appBar: _buildAppBar(),
-      body: Stack(
-        children: [
-          Column(
+      appBar: const CustomAppBar(text: "Add Task"),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Form(
+          key: _formKey,
+          child: Column(
             children: [
-              // TitleSection
-              Padding(
-                padding: const EdgeInsets.fromLTRB(18, 18, 18, 2),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Title",
-                      style: GoogleFonts.karla(
-                        textStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ), // Google Fonts
-                    ), //Title
-                    const SizedBox(height: 7),
-                    titleBox(), //Title Box
-                    const Divider(color: tdPaleWhite,
-                      height: 70,indent: 10,endIndent: 10,thickness:2,), //White Line
-                    Text(
-                      "ToDos",
-                      style: GoogleFonts.karla(
-                        textStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ), //ToDos
-                    const SizedBox(height: 7),
-                  ],
-                ),
+              const SizedBox(height: 8),
+              TitleSection(controller: _titleController),
+              const Divider(
+                color: tdPaleWhite,
+                height: 50,
+                indent: 10,
+                endIndent: 10,
+                thickness: 2,
               ),
-              // ToDosSection
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 2),
-                  physics: const BouncingScrollPhysics(),
-                  dragStartBehavior: DragStartBehavior.start,
-                  addAutomaticKeepAlives: false,
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
-                  children: [
-                    for (ToDo todo in todolist.reversed)
-                      TodoItem(
-                        todoForItem: todo,
-                        onTodoChanged: _handleToDoChange,
-                        onDeleteItem: _handleToDoDelete,
-                      ),
-                  ],
+              ToDosSection(
+                controllers: _todosControllers,
+                onDeleteTodo: (int index) {
+                  setState(() {
+                    _todosControllers.removeAt(index);
+                  });
+                },
+              ),
+              const SizedBox(height: 15),
+              CustomButton(
+                text: 'Add',
+                icon: const Icon(
+                  Icons.add_circle,
+                  color: Colors.white,
                 ),
-              ), //To-Do Items
+                minimumSize: const Size(200, 45),
+                onPressed: () {
+                  setState(() {
+                    _todosControllers.add(TextEditingController());
+                  });
+                },
+              ) //Add To-Do Button
             ],
           ),
-          // ButtonSection
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-                margin: const EdgeInsets.only(bottom: 15, right: 30),
-                child: IconButton(
-                  onPressed: () {
-                    _addTodoItem(_todoController.text);
-                  },
-                  style: IconButton.styleFrom(
-                    backgroundColor: tdBlue,
-                    foregroundColor: Colors.white,
-                    shadowColor: Colors.black,
-                    iconSize: 32,
-                    elevation: 10,
-                  ),
-                  constraints:
-                      const BoxConstraints(minHeight: 58, minWidth: 58),
-                  icon: const Icon(Icons.add_task_rounded),
-                )),
-          ), //Add Button
-        ],
+        ),
       ),
-    );
-  }
-
-  void _handleToDoChange(ToDo todo) {
-    setState(() {
-      todo.isDone = !todo.isDone;
-    });
-  }
-
-  void _handleToDoDelete(String id) {
-    setState(() {
-      todolist.removeWhere((item) => item.id == id);
-    });
-  }
-
-  void _addTodoItem(String todo) {
-    setState(() {
-      todolist.add(ToDo(
-          id: DateTime.now().microsecondsSinceEpoch.toString(),
-          todoText: todo));
-      _todoController.clear();
-    });
-  }
-
-  Widget titleBox() {
-    return Container(
-      width: 376,
-      height: 54,
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      decoration: BoxDecoration(
-        color: tdGrey,
-        borderRadius: BorderRadius.circular(40),
-      ),
-      child: TextField(
-        controller: _todoController,
-        textCapitalization: TextCapitalization.words,
-        // Cursor Settings
-        cursorColor: tdtextColor,
-        cursorHeight: 30,
-        cursorRadius: const Radius.circular(100),
-        cursorOpacityAnimates: true,
-        cursorErrorColor: Colors.red,
-        // Typed Text Settings
-        style: GoogleFonts.karla(
-          textStyle: const TextStyle(
+      floatingActionButton: SizedBox(
+        height: 70,
+        width: 70,
+        child: FloatingActionButton(
+          onPressed: () {
+            if (!_formKey.currentState!.validate()) return;
+            context.read<TasksProvider>().addTask(_addNewTask());
+            Navigator.pop(context);
+          },
+          backgroundColor: tdBlue,
+          shape: const CircleBorder(),
+          child: const Icon(
+            Icons.add_task_rounded,
+            size: 32,
             color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
           ),
         ),
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(15),
-          prefixIcon:
-              const Icon(Icons.task_alt_rounded, color: tdBlue, size: 35),
-          prefixIconConstraints:
-              const BoxConstraints(maxHeight: 50, minWidth: 50),
-          border: InputBorder.none,
-          hintText: "What would you like to do?",
-          hintStyle: GoogleFonts.karla(
-            textStyle: const TextStyle(
-              color: tdtextColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ),
+      ), //Add Task Button
     );
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      leadingWidth: 32,
-      iconTheme: const IconThemeData(color: tdtextColor, size: 30),
-      backgroundColor: tdbgColor,
-      elevation: 0,
-      title: Row(
-        children: [
-          // const Icon(
-          //   Icons.arrow_back_ios,
-          //   color: Colors.white,
-          //   size: 27,
-          // ),
-          Text(
-            "Add Task",
-            style: GoogleFonts.karla(
-              textStyle: const TextStyle(
-                color: tdtextColor,
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-              ),
-            ), //Google Fonts
-          ),
-        ],
-      ),
+  Task _addNewTask() {
+    final List<TaskToDo> todos = [
+      for (final controller in _todosControllers)
+        TaskToDo(
+          name: controller.text,
+          isDone: false,
+        ),
+    ];
+
+    return Task(
+      title: _titleController.text,
+      todos: todos,
     );
   }
-} // Class
+}

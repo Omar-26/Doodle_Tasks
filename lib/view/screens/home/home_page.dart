@@ -1,200 +1,69 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:pie_menu/pie_menu.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/constants/colors.dart';
-import 'package:todo_app/model/todo.dart';
-import '../../widgets/todo_item.dart';
+import 'package:todo_app/controllers/tasks_provider.dart';
+import 'package:todo_app/model/task.dart';
+import 'package:todo_app/view/widgets/misc/custom_app_bar.dart';
+import 'package:todo_app/view/screens/home/components/greeting_section.dart';
+import 'package:todo_app/view/widgets/pinned_task_card/pinned_task_section.dart';
+import 'package:todo_app/view/screens/home/components/task_list_section.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _AddTaskPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _AddTaskPageState extends State<HomePage> {
-  final todolist = ToDo.todolist();
-  final _todoController = TextEditingController();
+class _HomePageState extends State<HomePage> {
+  final List<Task> _tasks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _tasks.addAll(Task.mockUpTasks);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      backgroundColor: tdbgColor,
-      appBar: _buildAppBar(),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              // Title Section
-              Padding(
-                padding: const EdgeInsets.fromLTRB(18, 18, 18, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children:[
-                    Text(
-                      "Title",
-                      style: GoogleFonts.karla(
-                        textStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ), // Google Fonts
-                    ), //Title
-                    const SizedBox(height: 7),
-                    titleBox(), //Title Box
-                    const Divider(color: tdPaleWhite,
-                    height: 70,indent: 10,endIndent: 10,thickness:2,), //White Line
-                    Text(
-                      "ToDos",
-                      style: GoogleFonts.karla(
-                        textStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ), //ToDos
-                    const SizedBox(height: 7),
-                  ],
-                ),
+    return PieCanvas(
+      theme: _pieTheme(),
+      child: Consumer<TasksProvider>(
+        builder: (context, tasksProvider, _) {
+          final Task? pinnedTask = tasksProvider.tasks.cast<Task?>().firstWhere(
+                (task) => task!.isPinned,
+                orElse: () => null,
+              );
+          return Scaffold(
+            backgroundColor: tdbgColor,
+            appBar: const CustomAppBar(trailing: Icon(Icons.settings)),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+              child: Column(
+                children: [
+                  const GreetingSection(),
+                  const SizedBox(height: 25),
+                  if (pinnedTask != null) PinnedTaskSection(task: pinnedTask),
+                  const SizedBox(height: 28),
+                  Expanded(child: TaskListSection(tasks: tasksProvider.tasks)),
+                ],
               ),
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 2),
-                  physics: const BouncingScrollPhysics(),
-                  dragStartBehavior: DragStartBehavior.start,
-                  addAutomaticKeepAlives: false,
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
-                  children: [
-                    for (ToDo todo in todolist.reversed)
-                      TodoItem(
-                        todoForItem: todo,
-                        onTodoChanged: _handleToDoChange,
-                        onDeleteItem: _handleToDoDelete,
-                      ),
-                  ],
-                ),
-              ), //To-Do Items
-            ],
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-                margin: const EdgeInsets.only(bottom: 15, right: 30),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/addtaskpage');
-                  },
-                  style: IconButton.styleFrom(
-                    backgroundColor: tdBlue,
-                    foregroundColor: Colors.white,
-                    shadowColor: Colors.black,
-                    iconSize: 32,
-                    elevation: 10,
-                  ),
-                  constraints:
-                      const BoxConstraints(minHeight: 58, minWidth: 58),
-                  icon: const Icon(Icons.add_task_rounded),
-                )),
-          ), //Add Button
-        ],
-      ),
-    );
-  }
-
-  void _handleToDoChange(ToDo todo) {
-    setState(() {
-      todo.isDone = !todo.isDone;
-    });
-  }
-
-  void _handleToDoDelete(String id) {
-    setState(() {
-      todolist.removeWhere((item) => item.id == id);
-    });
-  }
-
-  void _addTodoItem(String todo) {
-    setState(() {
-      todolist.add(ToDo(
-          id: DateTime.now().microsecondsSinceEpoch.toString(),
-          todoText: todo));
-      _todoController.clear();
-    });
-  }
-
-  Widget titleBox() {
-    return Container(
-      width: 376,
-      height: 54,
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      decoration: BoxDecoration(
-        color: tdGrey,
-        borderRadius: BorderRadius.circular(40),
-      ),
-      child: TextField(
-        controller: _todoController,
-        textCapitalization: TextCapitalization.words,
-        // Cursor Settings
-        cursorColor: tdtextColor,
-        cursorHeight: 30,
-        cursorRadius: const Radius.circular(100),
-        cursorOpacityAnimates: true,
-        cursorErrorColor: Colors.red,
-        // Typed Text Settings
-        style: GoogleFonts.karla(
-          textStyle: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(15),
-          prefixIcon:
-              const Icon(Icons.task_alt_rounded, color: tdBlue, size: 35),
-          prefixIconConstraints:
-              const BoxConstraints(maxHeight: 50, minWidth: 50),
-          border: InputBorder.none,
-          hintText: "What would you like to do?",
-          hintStyle: GoogleFonts.karla(
-            textStyle: const TextStyle(
-              color: tdtextColor,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      backgroundColor: tdbgColor,
-      elevation: 0,
-      title: Row(
-        children: [
-          // const Icon(
-          //   Icons.arrow_back_ios,
-          //   color: Colors.white,
-          //   size: 27,
-          // ),
-          Text(
-            "Home Page",
-            style: GoogleFonts.karla(
-              textStyle: const TextStyle(
-                color: tdtextColor,
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-              ),
-            ), //Google Fonts
-          ),
-        ],
-      ),
-    );
-  }
-} // Class
+  PieTheme _pieTheme() => const PieTheme(
+        brightness: Brightness.dark,
+        pointerColor: Colors.transparent,
+        radius: 65,
+        rightClickShowsMenu: true,
+        buttonTheme:
+            PieButtonTheme(backgroundColor: tdGrey, iconColor: Colors.white),
+        buttonThemeHovered: PieButtonTheme(
+            backgroundColor: Colors.black, iconColor: Colors.white),
+      );
+}
