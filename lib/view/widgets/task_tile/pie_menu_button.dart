@@ -8,6 +8,7 @@ import 'package:todo_app/model/task.dart';
 
 class PieMenuButton extends StatelessWidget {
   final Task task;
+
   const PieMenuButton({super.key, required this.task});
 
   @override
@@ -25,7 +26,10 @@ class PieMenuButton extends StatelessWidget {
           actions: [
             PieAction(
                 tooltip: const Text('Delete'),
-                onSelect: () => tasksProvider.removeTask(task),
+                onSelect: () {
+                  tasksProvider.removeTask(task);
+                  tasksProvider.tasks[0].isPinned = true;
+                },
                 child: const Icon(Icons.delete),
                 buttonTheme: const PieButtonTheme(
                     backgroundColor: tdBlue, iconColor: Colors.white)),
