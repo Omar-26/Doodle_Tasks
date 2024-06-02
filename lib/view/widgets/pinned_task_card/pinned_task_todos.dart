@@ -5,6 +5,7 @@ import 'package:todo_app/view/widgets/pinned_task_card/pinned_task_todo.dart';
 
 class PinnedTaskTodos extends StatelessWidget {
   final Task task;
+
   const PinnedTaskTodos({super.key, required this.task});
 
   @override
@@ -12,26 +13,27 @@ class PinnedTaskTodos extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child:
-        Column(
-          children: [
-            for (var todo in task.todos) ...[
-              if (task.todos.indexOf(todo) != 0)
-                const SizedBox(height: 4),
-              PinnedTaskTodo(taskTodo: todo),
-            ]
-          ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Column(
+                children: [
+                  for (var todo in task.todos) ...[
+                    // if (task.todos.indexOf(todo) != 0) const SizedBox(height: 0),
+                    PinnedTaskTodo(
+                      taskTodo: todo,
+                      task: task,
+                    ),
+                  ]
+                ],
+              ),
+              TaskProgressIndicator(
+                progress: task.progress,
+                size: 70,
+              ),
+            ],
+          ),
         ),
-        ),
-        Column(
-          children: [
-            const SizedBox(height:20),
-            TaskProgressIndicator(
-              progress: task.progress,
-              size: 70,
-            ),
-          ],
-        )
       ],
     );
   }

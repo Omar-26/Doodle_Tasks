@@ -4,22 +4,26 @@ import 'package:todo_app/constants/colors.dart';
 
 class InputField extends StatelessWidget {
   final TextEditingController controller;
-  final bool obscureText;
-  final TextInputType keyboardType;
-  final Widget? prefix;
-  final Widget? suffix;
   final String hintText;
   final String? Function(String?) validator;
+  final void Function()? onFieldSubmitted;
+  final FocusNode? focusNode;
+  final Widget? prefix;
+  final Widget? suffix;
+  final bool obscureText;
+  final TextInputType keyboardType;
 
   const InputField({
     super.key,
     required this.controller,
+    required this.focusNode,
     required this.hintText,
     required this.validator,
     this.prefix,
     this.suffix,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -64,6 +68,8 @@ class InputField extends StatelessWidget {
           minHeight: 22,
         ),
       ),
+      //Focus Settings
+      onFieldSubmitted: (value) => onFieldSubmitted?.call(),
       obscureText: obscureText,
       keyboardType: keyboardType,
       //Cursor Settings

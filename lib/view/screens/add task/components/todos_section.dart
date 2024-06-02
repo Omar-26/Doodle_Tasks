@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:ui';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,11 +8,14 @@ import 'package:todo_app/view/widgets/inputs/Input_Field.dart';
 
 class ToDosSection extends StatelessWidget {
   final List<TextEditingController> controllers;
+  final List<FocusNode> focusNodes;
+
   final void Function(int) onDeleteTodo;
 
   const ToDosSection({
     super.key,
     required this.controllers,
+    required this.focusNodes,
     required this.onDeleteTodo,
   });
 
@@ -45,10 +45,20 @@ class ToDosSection extends StatelessWidget {
             for (var i = 0; i < controllers.length; i++) ...[
               InputField(
                 controller: controllers[i],
+                focusNode: focusNodes[i],
                 hintText: 'ToDo ${i + 1}',
                 validator: Validators.nonEmpty,
                 keyboardType: TextInputType.text,
                 prefix: SvgPicture.asset('assets/clipboard.svg'),
+                onFieldSubmitted: () {
+                  if (focusNodes.length == i + 1) {
+                    Focus.of(context).unfocus();
+                    return;
+                  }
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    FocusScope.of(context).requestFocus(focusNodes[i + 1]);
+                  });
+                },
                 suffix: i != 0
                     ? IconButton(
                         icon: const Icon(
@@ -59,6 +69,7 @@ class ToDosSection extends StatelessWidget {
                         onPressed: () => onDeleteTodo(i),
                       )
                     : null,
+                // focusNode: nextFocusNode,
               ),
               if (i != controllers.length - 1) const SizedBox(height: 14),
             ]

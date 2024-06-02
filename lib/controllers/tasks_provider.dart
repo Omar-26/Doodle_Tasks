@@ -4,6 +4,9 @@ import '../model/task.dart';
 
 class TasksProvider extends ChangeNotifier {
   final List<Task> _tasks = [];
+  final Task task = Task(title: 'Learn Flutter', todos: [
+    TaskToDo(name: 'Widgets', isDone: true),
+  ]);
 
   TasksProvider() {
     _tasks.addAll(Task.mockUpTasks); // Initializing The List With Mockup Values
@@ -18,6 +21,16 @@ class TasksProvider extends ChangeNotifier {
 
   void removeTask(Task task) {
     _tasks.remove(task);
+    notifyListeners();
+  }
+
+  void removeTodoDone(Task task) {
+    task.progress -= 1 / (task.todos.length);
+    notifyListeners();
+  }
+
+  void addTodoDone(Task task) {
+    task.progress += 1 / (task.todos.length);
     notifyListeners();
   }
 

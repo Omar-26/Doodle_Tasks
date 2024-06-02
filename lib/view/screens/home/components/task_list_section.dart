@@ -18,7 +18,7 @@ class TaskListSection extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                "Your Tasks",
+                " Your Tasks",
                 style: GoogleFonts.karla(
                   textStyle: const TextStyle(
                     color: Colors.white,
@@ -34,13 +34,11 @@ class TaskListSection extends StatelessWidget {
                 Icons.task_alt_rounded,
                 color: Colors.white,
               ),
-              minimumSize: const Size(130, 35),
+              minimumSize: const Size(125, 30),
               onPressed: () => Navigator.pushNamed(context, Routes.addTask),
             )
           ],
         ),
-        const SizedBox(height: 10),
-        Expanded(child: TaskList(tasks: tasks)),
       ],
     );
   }

@@ -6,6 +6,8 @@ const Color tdBlue = Color(0xFF004a77);
 const Color tdGrey = Color(0xFF252525);
 const Color tdPaleWhite = Color(0xFFB7B7B7);
 const Color tdRed = Color(0xFF6A1E1C);
+const Color tdGreen = Color(0xFF01A050);
+
 //
 // class AppColors{
 //

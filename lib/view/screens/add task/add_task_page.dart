@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/constants/colors.dart';
 import 'package:todo_app/controllers/tasks_provider.dart';
@@ -21,51 +23,68 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final List<TextEditingController> _todosControllers = [
     TextEditingController()
   ];
+  final List<FocusNode> _focusNodes = [FocusNode()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: tdbgColor,
-      appBar: const CustomAppBar(text: "Add Task"),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              const SizedBox(height: 8),
-              TitleSection(controller: _titleController),
-              const Divider(
-                color: tdPaleWhite,
-                height: 50,
-                indent: 10,
-                endIndent: 10,
-                thickness: 2,
-              ),
-              ToDosSection(
-                controllers: _todosControllers,
-                onDeleteTodo: (int index) {
-                  setState(() {
-                    _todosControllers.removeAt(index);
-                  });
-                },
-              ),
-              const SizedBox(height: 15),
-              CustomButton(
-                text: 'Add',
-                icon: const Icon(
-                  Icons.add_circle,
-                  color: Colors.white,
+      appBar: CustomAppBar(
+          text: Text(
+        "Add Task",
+        style: GoogleFonts.karla(
+          textStyle: const TextStyle(
+            color: tdtextColor,
+            fontSize: 28,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      )),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        dragStartBehavior: DragStartBehavior.down,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
+                TitleSection(controller: _titleController),
+                const Divider(
+                  color: tdPaleWhite,
+                  height: 50,
+                  indent: 10,
+                  endIndent: 10,
+                  thickness: 2,
                 ),
-                minimumSize: const Size(200, 45),
-                onPressed: () {
-                  setState(() {
-                    _todosControllers.add(TextEditingController());
-                  });
-                },
-              ) //Add To-Do Button
-            ],
+                ToDosSection(
+                  controllers: _todosControllers,
+                  focusNodes: _focusNodes,
+                  onDeleteTodo: (int index) {
+                    setState(() {
+                      _todosControllers.removeAt(index);
+                    });
+                  },
+                ),
+                const SizedBox(height: 15),
+                CustomButton(
+                  text: 'Add',
+                  icon: const Icon(
+                    Icons.add_circle,
+                    color: Colors.white,
+                  ),
+                  minimumSize: const Size(200, 45),
+                  onPressed: () {
+                    setState(() {
+                      _todosControllers.add(TextEditingController());
+                      _focusNodes.add(FocusNode());
+                    });
+                  },
+                ) //Add To-Do Button
+              ],
+            ),
           ),
         ),
       ),

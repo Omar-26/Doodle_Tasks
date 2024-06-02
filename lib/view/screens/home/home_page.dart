@@ -1,9 +1,12 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pie_menu/pie_menu.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/constants/colors.dart';
 import 'package:todo_app/controllers/tasks_provider.dart';
 import 'package:todo_app/model/task.dart';
+import 'package:todo_app/view/screens/home/components/task_list.dart';
 import 'package:todo_app/view/widgets/misc/custom_app_bar.dart';
 import 'package:todo_app/view/screens/home/components/greeting_section.dart';
 import 'package:todo_app/view/widgets/pinned_task_card/pinned_task_section.dart';
@@ -37,16 +40,64 @@ class _HomePageState extends State<HomePage> {
               );
           return Scaffold(
             backgroundColor: tdbgColor,
-            appBar: const CustomAppBar(trailing: Icon(Icons.settings)),
+            appBar: CustomAppBar(
+              text: AnimatedTextKit(
+                totalRepeatCount: 1,
+                // repeatForever: true,
+                animatedTexts: [
+                  WavyAnimatedText(
+                    "Doodle",
+                    speed: const Duration(
+                      milliseconds: 300,
+                    ),
+                    textStyle: GoogleFonts.pacifico(
+                      textStyle: const TextStyle(
+                        color: tdtextColor,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              // text: Text(
+              //   "Doodle",
+              //   style:
+              // ),
+              trailing: const Icon(
+                Icons.settings,
+                size: 28,
+              ),
+              centerTitle: true,
+            ),
             body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
-              child: Column(
-                children: [
-                  const GreetingSection(),
-                  const SizedBox(height: 25),
-                  if (pinnedTask != null) PinnedTaskSection(task: pinnedTask),
-                  const SizedBox(height: 28),
-                  Expanded(child: TaskListSection(tasks: tasksProvider.tasks)),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  const SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        SizedBox(height: 10),
+                        GreetingSection(),
+                        SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                  if (pinnedTask != null)
+                    SliverToBoxAdapter(
+                        child: PinnedTaskSection(task: pinnedTask)),
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 20),
+                        TaskListSection(tasks: tasksProvider.tasks),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                  TaskList(tasks: tasksProvider.tasks),
+                  const SliverToBoxAdapter(child: SizedBox(height: 10)),
                 ],
               ),
             ),

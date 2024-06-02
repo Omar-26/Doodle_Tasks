@@ -13,11 +13,11 @@ class Logo extends StatelessWidget {
           'assets/logo.svg',
           width: 40,
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 68),
         const Text(
-          'ToDo',
+          'Doodle Tasks',
           style: TextStyle(
-            fontSize: 30,
+            fontSize: 26,
             fontWeight: FontWeight.w600,
             color: tdtextColor,
           ),

@@ -25,6 +25,7 @@ class TitleSection extends StatelessWidget {
       const SizedBox(height: 7),
       InputField(
         controller: controller,
+        focusNode: FocusNode(),
         validator: Validators.nonEmpty,
         hintText: "What would you like to do?",
         prefix: const Icon(Icons.task_alt_rounded, color: tdBlue, size: 35),

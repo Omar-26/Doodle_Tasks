@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_app/constants/colors.dart';
 import 'package:todo_app/model/task.dart';
+import 'package:todo_app/view/widgets/misc/task_progress_indicator.dart';
 import 'package:todo_app/view/widgets/pinned_task_card/pinned_task_todos.dart';
 
 class PinnedTaskSection extends StatelessWidget {
@@ -13,10 +14,10 @@ class PinnedTaskSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.fromLTRB(0, 24, 24, 24),
       decoration: BoxDecoration(
         color: tdGrey,
-        borderRadius: BorderRadius.circular(40),
+        borderRadius: BorderRadius.circular(50),
       ),
       child: Row(
         children: [
@@ -27,35 +28,42 @@ class PinnedTaskSection extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      task.title,
-                      style: GoogleFonts.karla(
-                        textStyle: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 23,
-                          fontWeight: FontWeight.w500,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 24),
+                      child: Text(
+                        task.title,
+                        style: GoogleFonts.karla(
+                          textStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 25,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  SvgPicture.asset(
-                    'assets/pin.svg',
-                    width: 30,
-                    colorFilter:
-                        const ColorFilter.mode(tdBlue, BlendMode.srcIn),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: SvgPicture.asset(
+                      'assets/pin.svg',
+                      width: 32,
+                      colorFilter:
+                          const ColorFilter.mode(tdBlue, BlendMode.srcIn),
+                    ),
                   ),
-                  const SizedBox(
-                    width: 8,
-                  )
                 ],
               ),
               const Divider(
                 color: tdtextColor,
-                thickness: 1,
-                endIndent: 70,
+                thickness: 1.4,
+                indent: 24,
+                endIndent: 75,
               ),
-              PinnedTaskTodos(
-                task: task,
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: PinnedTaskTodos(
+                  task: task,
+                ),
               ),
             ],
           ))

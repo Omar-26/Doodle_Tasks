@@ -6,11 +6,11 @@ class TaskList extends StatelessWidget {
   final List<Task> tasks;
 
   const TaskList({super.key, required this.tasks});
- 
+
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      physics: const BouncingScrollPhysics(),
+    return SliverList.separated(
+      // physics: const BouncingScrollPhysics(),
       itemCount: tasks.length,
       separatorBuilder: (context, index) => const SizedBox(height: 10),
       itemBuilder: (context, index) {

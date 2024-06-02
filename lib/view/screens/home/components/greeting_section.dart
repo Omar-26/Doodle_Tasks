@@ -6,13 +6,13 @@ class GreetingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Row(
+    return Row(
       children: [
         const CircleAvatar(
           radius: 30,
           backgroundImage: AssetImage("assets/profile_pic_omar.jpg"),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: 20),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -22,16 +22,17 @@ class GreetingSection extends StatelessWidget {
                 textStyle: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-            ),Text(
-              "We wish you a Productive day !",
+            ),
+            Text(
+              "We wish you a productive day !",
               style: GoogleFonts.karla(
                 textStyle: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
