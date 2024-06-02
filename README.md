@@ -1,41 +1,50 @@
 <p align="center">
-  <img src="https://github.com/Omar-26/CourseCode/blob/main/Assets/courseCode.png?raw=true"  />
+  <img src="https://github.com/Omar-26/Doodle_Tasks/blob/main/assets/icon.png?raw=true"  height="120"/>
   <h3 align="center">Doodle</h3>
   <p align="center">A Todo List App</p>
   <p align="center">
-    <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows-blue.svg" alt="Platforms">
+    <img src="https://img.shields.io/badge/platform-IOS%20%7C%20Android-blue.svg" alt="Platforms">
   </p>
 </p>
 
-## Table of Contents
-
-- [Introduction](#introduction)
-- [Features](#features)
-- [Screenshots](#screenshots)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Introduction
+## Overview
 
 **Doodle** is a sleek and intuitive task management application built using Flutter. It allows users to manage their tasks efficiently with features like animated greetings, pinned tasks, and a beautiful, responsive UI. The app is designed with user experience in mind, providing a seamless task management experience on both Android and iOS devices.
 
+## Screenshots
+
+![Home Screen](https://github.com/Omar-26/Doodle_Tasks/blob/main/assets/presentation.png?raw=true)
+
 ## Features
 
-- **Animated Greetings**: A warm, animated greeting using `AnimatedTextKit`.
+- **Provider State Management**: Efficient state management using `provider`.
 - **Pinned Tasks**: Easily pin important tasks to access them quickly.
+- **Animated Greetings**: A warm, animated greeting using `AnimatedTextKit`.
 - **Task List**: View, add, and manage your tasks in a structured list.
 - **Custom App Bar**: Stylish app bar with a wavy text animation.
 - **Pie Menu Integration**: Unique pie menu for additional functionality.
 - **Responsive Design**: Smooth scrolling with `CustomScrollView` and `Slivers`.
-- **Provider State Management**: Efficient state management using `provider`.
 
-## Screenshots
+## Architecture
 
-![Home Screen](path/to/home_screen.png)
-![Pinned Task](path/to/pinned_task.png)
-![Task List](path/to/task_list.png)
+Doodle follows the MVC (Model-View-Controller) design pattern to ensure a clean separation of concerns and maintainability. Here's an overview of the architecture:
+
+### Model
+
+- **Task**: Represents the data structure for tasks, including properties like title, description, and pinned status.
+
+### View
+
+- **HomePage**: The main screen that displays the task list and pinned tasks.
+- **CustomAppBar**: Custom app bar with animated text.
+- **GreetingSection**: Displays a greeting message to the user.
+- **PinnedTaskSection**: Displays pinned tasks.
+- **TaskListSection**: Displays a list of tasks.
+- **TaskList**: A detailed list view of all tasks.
+
+### Controller
+
+- **TasksProvider**: Manages the state of tasks and provides methods to manipulate the task data. It interacts with the model and notifies the view of any changes.
 
 ## Installation
 
@@ -44,8 +53,8 @@ To get started with Doodle, follow these steps:
 1. **Clone the repository:**
 
     ```sh
-    git clone https://github.com/yourusername/doodle.git
-    cd doodle
+    git clone https://github.com/Omar-26/Doodle_Tasks.git
+    cd Doodle_Tasks
     ```
 
 2. **Install dependencies:**
